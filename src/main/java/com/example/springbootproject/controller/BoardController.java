@@ -5,8 +5,7 @@ import com.example.springbootproject.service.BoardService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,11 +14,34 @@ import java.util.List;
 public class BoardController {
     private BoardService boardService;
 
+    @DeleteMapping("/post/{id}")
+    public String delete(@PathVariable("id") Long id){
+        boardService.deletePost(id);
+        return "redirect:/";
+    }
+    @GetMapping("/post/editing/{id}")
+    public String edit(@PathVariable("id") Long id,Model model){
+        BoardDto boardDto = boardService.getPost(id);
+        model.addAttribute("boardDto",boardDto);
+        return "board/update.html";
+    }
+    @PutMapping("/post/editing/{id}")
+    public String update(BoardDto boardDto){
+        boardService.savePost(boardDto);
+        return "redirect:/";
+    }
+
     @GetMapping("/")
     public String list(Model model){
         List<BoardDto> boardList = boardService.getBoardList();
         model.addAttribute("boardList",boardList);
         return "/board/list.html";
+    }
+    @GetMapping("/post/{id}")
+    public String detail(@PathVariable("id") Long id, Model model) {
+        BoardDto boardDto = boardService.getPost(id);
+        model.addAttribute("boardDto", boardDto);
+        return "board/detail.html";
     }
 
     @GetMapping("/openAPITest")
