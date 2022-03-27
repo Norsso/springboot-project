@@ -22,3 +22,7 @@ spring:
             descriptor:
               sql:
                 BasicBinder: TRACE
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
