@@ -14,6 +14,14 @@ import java.util.List;
 public class BoardController {
     private BoardService boardService;
 
+    @GetMapping("/search")
+    public String search(@RequestParam(value = "keyword") String keyword, Model model){
+        List<BoardDto> boardDtoList = boardService.searchPosts(keyword);
+
+        model.addAttribute("boardList",boardDtoList);
+
+        return"board/list.html";
+    }
     @DeleteMapping("/post/{id}")
     public String delete(@PathVariable("id") Long id){
         boardService.deletePost(id);
@@ -32,8 +40,11 @@ public class BoardController {
     }
 
     @GetMapping("/")
-    public String list(Model model){
-        List<BoardDto> boardList = boardService.getBoardList();
+    public String list(Model model, @RequestParam(value = "page", defaultValue = "1") Integer pageNum){
+        List<BoardDto> boardList = boardService.getBoardList(pageNum);
+        Integer[] pageList = boardService.getPageList(pageNum);
+
+        model.addAttribute("pageList",pageList);
         model.addAttribute("boardList",boardList);
         return "/board/list.html";
     }
